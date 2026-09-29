@@ -93,8 +93,47 @@ def leaf_prediction(labels):
     
     return int(values[np.argmax(counts)])
 
-# Step 7 - build_tree (not yet solved)
-# TODO: implement
+# Step 7 - build_tree
+def build_tree(features, labels, max_depth=10, min_samples_split=2, feature_subset=None, depth=0):
+    # TODO: recursively grow a decision tree, returning a nested dict of leaf/internal nodes.
+    if should_stop(labels, depth, max_depth, min_samples_split):
+        return {
+            'leaf': True,
+            'prediction': leaf_prediction(labels)
+            }
+    
+    if feature_subset is None:
+        feature_list = []
+        for i in range(features.shape[1]):
+            feature_list.append(i)
+    else:
+        feature_list = list(feature_subset)
+
+    split = best_split(features, labels, feature_list)
+    if split['feature_index'] is None:
+        return {
+            'leaf': True,
+            'prediction': leaf_prediction(labels)
+        }
+    
+    left, left_labels, right, right_labels = split_dataset(features, labels, split['feature_index'], split['threshold'])
+    
+    if len(left_labels) == 0 or len(right_labels) == 0:
+        return {
+            'leaf': True,
+            'prediction': leaf_prediction(labels)
+        }
+    
+    left_child = build_tree(left, left_labels, max_depth, min_samples_split, feature_subset, depth+1)
+    right_child = build_tree(right, right_labels, max_depth, min_samples_split, feature_subset, depth+1)
+
+    return {
+        'leaf': False,
+        'feature_index': split['feature_index'],
+        'threshold': split['threshold'],
+        'left': left_child,
+        'right': right_child
+    }
 
 # Step 8 - predict_example_tree (not yet solved)
 # TODO: implement
