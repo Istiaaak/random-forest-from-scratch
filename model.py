@@ -224,8 +224,18 @@ def combine_predictions(tree_predictions):
     
     return np.asarray(output)
 
-# Step 14 - predict_forest (not yet solved)
-# TODO: implement
+# Step 14 - predict_forest
+def predict_forest(forest, features):
+    # TODO: predict classes for a dataset using the whole trained forest.
+    tree_pred = []
+    for i in forest:
+        tree = i['tree']
+        feature_indices = i['feature_indices']
+        pred = predict_tree(tree, features)
+        tree_pred.append(pred)
+    
+
+    return combine_predictions(np.asarray(tree_pred, dtype=int))
 
 # Step 15 - accuracy (not yet solved)
 # TODO: implement
